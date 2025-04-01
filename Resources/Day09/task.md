@@ -12,9 +12,25 @@ In this exercise, you will create a Deployment and expose a container port for i
 2. Create a Deployment named `myapp` that creates 1 replica running the image `nginx:1.23.4-alpine`. Expose the container port 80.
 3. Scale the Deployment to 2 replicas.
 4. Create a temporary Pod using the image `busybox` and run a `wget` command against the IP of the service.
+
+# Create a temporary Busybox Pod and run wget
+kubectl run busybox --image=busybox --restart=Never --rm -it -- sh -c "wget -O- http://<SERVICE_IP>"
+
 5. Run a `wget` command against the service outside the cluster.
+
+# Update the service to NodePort (assigns a random port on cluster nodes)
+kubectl expose deployment <DEPLOYMENT_NAME> --type=NodePort --port=80
+wget http://<NODE_IP>:<NODEPORT>
+kubectl get svc <SERVICE_NAME>
+
 6. Change the service type so the Pods can be reached outside the cluster.
+Option B: Change Service Type to LoadBalancer (Cloud Providers)
+kubectl expose deployment <DEPLOYMENT_NAME> --type=LoadBalancer --port=80
+kubectl get svc <SERVICE_NAME>
+
 7. Run a `wget` command against the service outside the cluster.
+wget http://<EXTERNAL_IP>:80
+
 8. Discuss: Can you expose the Pods as a service without a deployment?
 9. Discuss: Under what condition would you use the service types `LoadBalancer,` `node port,` `clusterIP,` and `external`?
 
